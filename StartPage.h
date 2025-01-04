@@ -8,10 +8,14 @@ class StartPage : public QWidget
     Q_OBJECT
 
 public:
-    explicit StartPage(QWidget *parent = nullptr);
+    StartPage(QWidget *parent = nullptr);
 
-    signals:
-        void startGameClicked();
+
+signals:
+    void startGameClicked();
+
+private:
+    void setupLayout();
 };
 
 #endif // STARTPAGE_H

@@ -98,7 +98,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
 
         //DEBUG
         case Qt::Key_2:
-            clyde->setGhostMode(Ghost::Chase);
+            player->setAlive(false);
             break;
         case Qt::Key_3:
             clyde->setGhostMode(Ghost::Return);

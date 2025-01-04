@@ -1,9 +1,13 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QLabel>
 #include <QMainWindow>
 #include <QStackedWidget>
 #include "GameWindow.h"
+#include "StartPage.h"
+#include "EndPage.h"
+#include "DeathAnimationPage.h"
 
 class MainWindow : public QMainWindow
 {
@@ -11,20 +15,28 @@ class MainWindow : public QMainWindow
 
 private:
     QStackedWidget *stackedWidget;
-    QWidget *startPage;
+    StartPage *startPage;
     GameWindow *gameWindow;
-    QWidget *endPage;
+    EndPage *endPage;
+    DeathAnimationPage *deathAnimationPage;
+
 
     void setupStartPage();
-    void setupEndPage(bool isPlayerAlive, int score);
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+
+    ~MainWindow() override;
 
     void showGameWindow();
+
     void showEndPage(bool isPlayerAlive, int score);
-    void resetGame();
+
+    void showDeathAnimation();
+
+    void resetGame() const;
+
+    void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif // MAINWINDOW_H

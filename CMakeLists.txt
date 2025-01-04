@@ -44,8 +44,10 @@ add_executable(Pacman
         MainWindow.h
         StartPage.cpp
         StartPage.h
-        EndScreen.cpp
-        EndScreen.h
+        EndPage.cpp
+        EndPage.h
+        DeathAnimationPage.cpp
+        DeathAnimationPage.h
 )
 target_link_libraries(Pacman
         Qt::Core
