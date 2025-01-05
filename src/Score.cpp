@@ -1,4 +1,4 @@
-#include "Score.h"
+#include "../Headers/Score.h"
 
 Score::Score(): score(0)
 {}

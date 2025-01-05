@@ -17,7 +17,6 @@ signals:
     void animationFinished();
 
 private:
-    QLabel *animationLabel;
     QVector<QPixmap> deathAnimation;
     QTimer *animationTimer;
     int currentFrame;
@@ -25,7 +24,7 @@ private:
 
     void loadAnimationFrames();
 
-    void paintEvent(QPaintEvent *event);
+    void paintEvent(QPaintEvent *event) override;
 };
 
 #endif // DEATHANIMATIONPAGE_H

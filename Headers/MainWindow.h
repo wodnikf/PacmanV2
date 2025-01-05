@@ -26,9 +26,9 @@ private:
 public:
     MainWindow(QWidget *parent = nullptr);
 
-    ~MainWindow() override;
-
     void showGameWindow();
+
+    void handleGameFinished(bool isPlayerAlive, int score);
 
     void showEndPage(bool isPlayerAlive, int score);
 
@@ -37,6 +37,10 @@ public:
     void resetGame() const;
 
     void keyPressEvent(QKeyEvent *event) override;
+
+    void setUpFont();
+
+    void setUpBackground();
 };
 
 #endif // MAINWINDOW_H

@@ -1,5 +1,4 @@
-#include "Player.h"
-#include <iostream>
+#include "../Headers/Player.h"
 
 Player::Player(Point startPos, QPixmap spriteSheet)
     : Entity(startPos), spriteSheet(std::move(spriteSheet))

@@ -1,11 +1,10 @@
-#include "DeathAnimationPage.h"
+#include "../Headers/DeathAnimationPage.h"
 
-#include <iostream>
 #include <QPainter>
 #include <QTimer>
 
 DeathAnimationPage::DeathAnimationPage(GameWindow *gameWindow, QWidget *parent)
-    : QWidget(parent), gameWindow(gameWindow), currentFrame(0)
+    : QWidget(parent), currentFrame(0), gameWindow(gameWindow)
 {
     loadAnimationFrames();
 
@@ -44,7 +43,6 @@ void DeathAnimationPage::loadAnimationFrames()
 void DeathAnimationPage::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-
     QPainter painter(this);
 
     Point playerPosition = gameWindow->getPlayer()->getPosition();

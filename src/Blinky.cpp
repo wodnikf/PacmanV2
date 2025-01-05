@@ -1,4 +1,4 @@
-#include "Blinky.h"
+#include "../Headers/Blinky.h"
 
 Blinky::Blinky(Point startPoint, Player *player, QPixmap spriteSheet)
     : Ghost(startPoint, 0), spriteSheet(std::move(spriteSheet))

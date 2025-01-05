@@ -1,4 +1,4 @@
-#include "Ghost.h"
+#include "../Headers/Ghost.h"
 #include <iostream>
 
 Ghost::Ghost(Point startPoint, int id)

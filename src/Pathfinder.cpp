@@ -1,4 +1,4 @@
-#include "Pathfinder.h"
+#include "../Headers/Pathfinder.h"
 #include <queue>
 #include <unordered_map>
 #include <algorithm>

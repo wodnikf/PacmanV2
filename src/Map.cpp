@@ -1,4 +1,4 @@
-#include "Map.h"
+#include "../Headers/Map.h"
 
 #include <iostream>
 #include <QFile>

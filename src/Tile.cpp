@@ -1,4 +1,4 @@
-#include "Tile.h"
+#include "../Headers/Tile.h"
 #include <QPainter>
 
 Tile::Tile(Type type, Point position, int id, QPixmap *tileset) : type(type), position(position), id(id),

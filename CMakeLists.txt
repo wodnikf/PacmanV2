@@ -14,40 +14,40 @@ find_package(Qt6 COMPONENTS
         REQUIRED)
 
 add_executable(Pacman
-        GameWindow.cpp
-        GameWindow.h
-        Globals.h
-        main.cpp
-        Map.cpp
-        Map.h
-        Tile.cpp
-        Tile.h
-        Entity.cpp
-        Entity.h
-        Player.cpp
-        Player.h
-        Ghost.cpp
-        Ghost.h
-        Blinky.cpp
-        Blinky.h
-        Pathfinder.cpp
-        Pathfinder.h
-        Pinky.cpp
-        Pinky.h
-        Inky.cpp
-        Inky.h
-        Clyde.cpp
-        Clyde.h
-        Score.cpp
-        Score.h
-        MainWindow.cpp
-        MainWindow.h
-        StartPage.cpp
-        StartPage.h
-        EndPage.cpp
-        EndPage.h
-        DeathAnimationPage.cpp
-        DeathAnimationPage.h
+        src/GameWindow.cpp
+        Headers/GameWindow.h
+        Headers/Globals.h
+        src/main.cpp
+        src/Map.cpp
+        Headers/Map.h
+        src/Tile.cpp
+        Headers/Tile.h
+        src/Entity.cpp
+        Headers/Entity.h
+        src/Player.cpp
+        Headers/Player.h
+        src/Ghost.cpp
+        Headers/Ghost.h
+        src/Blinky.cpp
+        Headers/Blinky.h
+        src/Pathfinder.cpp
+        Headers/Pathfinder.h
+        src/Pinky.cpp
+        Headers/Pinky.h
+        src/Inky.cpp
+        Headers/Inky.h
+        src/Clyde.cpp
+        Headers/Clyde.h
+        src/Score.cpp
+        Headers/Score.h
+        src/MainWindow.cpp
+        Headers/MainWindow.h
+        src/StartPage.cpp
+        Headers/StartPage.h
+        src/EndPage.cpp
+        Headers/EndPage.h
+        src/DeathAnimationPage.cpp
+        Headers/DeathAnimationPage.h
 )
 target_link_libraries(Pacman
         Qt::Core

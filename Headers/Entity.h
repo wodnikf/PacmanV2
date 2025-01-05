@@ -1,11 +1,11 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <QVector>
 #include <QPainter>
+#include <QVector>
 #include "Globals.h"
-#include "Tile.h"
 #include "Map.h"
+#include "Tile.h"
 
 class Player;
 class Ghost;

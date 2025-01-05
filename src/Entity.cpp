@@ -1,5 +1,4 @@
-#include "Entity.h"
-#include <iostream>
+#include "../Headers/Entity.h"
 
 Entity::Entity(Point startPos)
     : position(startPos), dir(Neutral), alive(true), frameCounter(0), moveDelay(16),

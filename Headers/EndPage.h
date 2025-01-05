@@ -1,7 +1,6 @@
 #ifndef ENDPAGE_H
 #define ENDPAGE_H
 
-#include <QWidget>
 #include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>

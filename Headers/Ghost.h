@@ -19,8 +19,6 @@ private:
     int currentFrame = 0;
     std::vector<QPixmap> animations[5][5];
 
-    Point startingPoint;
-
 public:
     int scatterTimer = 0;
     const int scatterDuration = 7000;

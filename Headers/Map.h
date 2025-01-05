@@ -8,7 +8,7 @@ class Map
 private:
     QVector<QVector<Tile> > tiles;
     QPixmap tileset;
-    int numberOfPellets;
+    int numberOfPellets = 0;
 
 public:
     Map(const QString &fileName, const QPixmap *tileset);

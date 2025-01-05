@@ -30,7 +30,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 public:
-    GameWindow(const QString &mapFile, QPixmap *tileset, const QPixmap *sprites, QWidget *parent = nullptr);
+    GameWindow(const QString &mapFile, const QPixmap *tileset, const QPixmap *sprites, QWidget *parent = nullptr);
 
     ~GameWindow() override;
 

@@ -1,11 +1,11 @@
-#include "GameWindow.h"
+#include "../Headers/GameWindow.h"
 
-#include <QPainter>
 #include <QKeyEvent>
-#include "Clyde.h"
-#include "Inky.h"
+#include <QPainter>
+#include "../Headers/Clyde.h"
+#include "../Headers/Inky.h"
 
-GameWindow::GameWindow(const QString &mapFile, QPixmap *tileset, const QPixmap *sprites, QWidget *parent)
+GameWindow::GameWindow(const QString &mapFile, const QPixmap *tileset, const QPixmap *sprites, QWidget *parent)
     : QWidget(parent)
 {
     timer.start();
@@ -45,6 +45,7 @@ void GameWindow::updateGame()
     pinky->update(gameMap, deltaTime);
     inky->update(gameMap, deltaTime);
     clyde->update(gameMap, deltaTime);
+
 
     if (!player->isAlive() || gameMap->getNumberOfPellets() == 0)
     {
@@ -107,8 +108,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
             blinky->setMoveDelay(blinky->getMoveDelay() - 1);
             break;
         case Qt::Key_Escape:
-            exit(0);
-
+            QApplication::quit();
         default:
             break;
     }

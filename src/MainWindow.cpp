@@ -1,5 +1,7 @@
-#include "MainWindow.h"
-#include <iostream>
+#include "../Headers/MainWindow.h"
+
+#include <QFile>
+#include <QFontDatabase>
 #include <QKeyEvent>
 #include <QLabel>
 
@@ -11,15 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     setupStartPage();
     stackedWidget->setCurrentWidget(startPage);
     setFixedSize(720, 797);
-}
-
-MainWindow::~MainWindow()
-{
-    delete startPage;
-    delete gameWindow;
-    delete endPage;
-    delete deathAnimationPage;
-    delete stackedWidget;
+    setUpFont();
+    setUpBackground();
 }
 
 void MainWindow::setupStartPage()
@@ -31,12 +26,10 @@ void MainWindow::setupStartPage()
 
 void MainWindow::showGameWindow()
 {
-    if (gameWindow)
-        delete gameWindow;
-
     gameWindow = new GameWindow("../Assets/map1.csv", new QPixmap("../Assets/tileset.png"),
                                 new QPixmap("../Assets/spriteSheet.png"), this);
-    connect(gameWindow, &GameWindow::gameOver, this, &MainWindow::showDeathAnimation);
+
+    connect(gameWindow, &GameWindow::gameOver, this, &MainWindow::handleGameFinished);
 
     stackedWidget->addWidget(gameWindow);
     stackedWidget->setCurrentWidget(gameWindow);
@@ -45,9 +38,21 @@ void MainWindow::showGameWindow()
 }
 
 
+void MainWindow::handleGameFinished(bool isPlayerAlive, int score)
+{
+    if (isPlayerAlive)
+    {
+        showEndPage(isPlayerAlive, score);
+    }
+    else
+    {
+        showDeathAnimation();
+    }
+}
+
 void MainWindow::showEndPage(bool isPlayerAlive, int score)
 {
-    EndPage *endPage = new EndPage(isPlayerAlive, score, this);
+    endPage = new EndPage(isPlayerAlive, score, this);
     connect(endPage, &EndPage::restartGame, this, &MainWindow::resetGame);
 
     stackedWidget->addWidget(endPage);
@@ -62,9 +67,9 @@ void MainWindow::resetGame() const
 
 void MainWindow::showDeathAnimation()
 {
-    DeathAnimationPage *deathAnimationPage = new DeathAnimationPage(gameWindow, this);
+    deathAnimationPage = new DeathAnimationPage(gameWindow, this);
     connect(deathAnimationPage, &DeathAnimationPage::animationFinished, [this]() {
-        showEndPage(false, gameWindow->getPlayer()->getScore()->getScoreAmount());
+        showEndPage(gameWindow->getPlayer()->isAlive(), gameWindow->getPlayer()->getScore()->getScoreAmount());
     });
 
     stackedWidget->addWidget(deathAnimationPage);
@@ -77,9 +82,41 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
         case Qt::Key_Escape:
         {
-            exit(0);
+            QApplication::quit();
         }
         default:
             break;
     }
+}
+
+
+void MainWindow::setUpFont()
+{
+    const QString fontPath = "../Assets/Font/PressStart2P-Regular.ttf";
+    QFile fontFile(fontPath);
+
+    if (!fontFile.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "Failed to open font file.";
+        return;
+    }
+
+    const QByteArray fontData = fontFile.readAll();
+
+    const int fontId = QFontDatabase::addApplicationFontFromData(fontData);
+
+    QStringList families = QFontDatabase::applicationFontFamilies(fontId);
+    if (!families.isEmpty())
+    {
+        QFont customFont(families.first(), 40);
+        this->setFont(customFont);
+    }
+}
+
+void MainWindow::setUpBackground()
+{
+    this->setAutoFillBackground(true);
+    QPalette palette;
+    palette.setColor(QPalette::Window, Qt::black);
+    this->setPalette(palette);
 }
