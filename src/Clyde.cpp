@@ -27,11 +27,28 @@ void Clyde::loadAnimation()
     }
 }
 
-void Clyde::chase(const Map *map, Pathfinder &pathfinder)
+Point generateRandomPos(const Map *map)
 {
     srand(time(nullptr));
     const int X_SIZE = map->getWidth();
     const int Y_SIZE = map->getHeight();
+    Point randomTarget;
+
+    do
+    {
+        const int randomX = rand() % X_SIZE;
+        const int randomY = rand() % Y_SIZE;
+        randomTarget = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
+    }
+    while (map->getTile(randomTarget).getType() == Wall ||
+           map->getTile(randomTarget).getType() == GhostHouse);
+
+    return randomTarget;
+}
+
+
+void Clyde::chase(const Map *map, Pathfinder &pathfinder)
+{
     static Point targetPos;
     static bool firstTime = true;
 
@@ -39,32 +56,14 @@ void Clyde::chase(const Map *map, Pathfinder &pathfinder)
 
     if (firstTime || targetAchieved)
     {
-        int randomX = rand() % X_SIZE;
-        int randomY = rand() % Y_SIZE;
-        targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-
-        while (map->getTile(targetPos).getType() == Wall || map->getTile(targetPos).getType() == GhostHouse)
-        {
-            randomX = rand() % X_SIZE;
-            randomY = rand() % Y_SIZE;
-            targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-        }
+        targetPos = generateRandomPos(map);
     }
 
     path = pathfinder.findPath(snapToGrid(position), targetPos, false);
 
     while (path.empty())
     {
-        int randomX = rand() % X_SIZE;
-        int randomY = rand() % Y_SIZE;
-        targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-
-        while (map->getTile(targetPos).getType() == Wall || map->getTile(targetPos).getType() == GhostHouse)
-        {
-            randomX = rand() % X_SIZE;
-            randomY = rand() % Y_SIZE;
-            targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-        }
+        targetPos = generateRandomPos(map);
         path = pathfinder.findPath(snapToGrid(position), targetPos, false);
     }
 
