@@ -27,6 +27,7 @@ void Clyde::loadAnimation()
     }
 }
 
+
 void Clyde::chase(const Map *map, Pathfinder &pathfinder)
 {
     srand(time(nullptr));
@@ -81,6 +82,7 @@ void Clyde::chase(const Map *map, Pathfinder &pathfinder)
 
     firstTime = false;
 }
+
 
 void Clyde::scatter(Map *map, Pathfinder &pathfinder)
 {
