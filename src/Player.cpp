@@ -152,3 +152,9 @@ Score *Player::getScore()
 {
     return &score;
 }
+
+
+std::vector<Ghost *> Player::getGhosts()
+{
+    return ghosts;
+}

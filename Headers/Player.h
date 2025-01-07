@@ -36,6 +36,8 @@ public:
 
     Score *getScore();
 
+    std::vector<Ghost *> getGhosts();
+
 };
 
 #endif // PLAYER_H

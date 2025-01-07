@@ -41,11 +41,11 @@ void GameWindow::updateGame()
     lastTime = currentTime;
 
     player->update(gameMap, deltaTime);
-    blinky->update(gameMap, deltaTime);
-    pinky->update(gameMap, deltaTime);
-    inky->update(gameMap, deltaTime);
-    clyde->update(gameMap, deltaTime);
 
+    for (const auto &ghost : getPlayer()->getGhosts())
+    {
+        ghost->update(gameMap, deltaTime);
+    }
 
     if (!player->isAlive() || gameMap->getNumberOfPellets() == 0)
     {
@@ -67,10 +67,10 @@ void GameWindow::paintEvent(QPaintEvent *event)
     updateGame();
     gameMap->render(painter);
     player->render(painter);
-    blinky->render(painter);
-    pinky->render(painter);
-    inky->render(painter);
-    clyde->render(painter);
+    for (const auto &ghost : getPlayer()->getGhosts())
+    {
+        ghost->render(painter);
+    }
 
     update();
 }
