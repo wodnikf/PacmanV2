@@ -25,21 +25,11 @@ void Pinky::loadAnimation()
     }
 }
 
-void Pinky::chase(const Map *map, Pathfinder &pathfinder)
+
+Point Pinky::calculateTarget(const Point &playerPos, const Direction &playerDir, const int &offset)
 {
-    const Point playerPos = snapToGrid(getPlayerPosition());
-    const int offset = 6 * Globals::TILE_SIZE;
-
-    static Point targetPos = playerPos;
-    static bool targetAchieved = false;
-
-    if (targetAchieved)
-    {
-        targetPos = playerPos;
-        targetAchieved = false;
-    }
-
-    switch (getPlayerDirection())
+    Point targetPos = playerPos;
+    switch (playerDir)
     {
         case UP:
             targetPos.y -= offset;
@@ -56,30 +46,38 @@ void Pinky::chase(const Map *map, Pathfinder &pathfinder)
         default:
             break;
     }
+    return targetPos;
+}
 
+void Pinky::updatePathToTarget(const Pathfinder &pathfinder, Point &targetPos)
+{
     path = pathfinder.findPath(snapToGrid(position), targetPos, false);
 
     if (path.empty())
     {
-        targetPos = playerPos;
+        targetPos = snapToGrid(getPlayerPosition());
         path = pathfinder.findPath(snapToGrid(position), targetPos, false);
-        directions = getDirections(path);
-    }
-    else
-    {
-        path = pathfinder.findPath(snapToGrid(position), targetPos, false);
-        directions = getDirections(path);
     }
 
+    directions = getDirections(path);
+    dir = directions.empty() ? Neutral : directions.front();
+}
 
-    if (!directions.empty())
+void Pinky::chase(const Map *map, Pathfinder &pathfinder)
+{
+    const Point playerPos = snapToGrid(getPlayerPosition());
+    const int offset = 6 * Globals::TILE_SIZE;
+
+    static Point targetPos = playerPos;
+    static bool targetAchieved = false;
+
+    if (targetAchieved || position == targetPos)
     {
-        dir = directions.front();
+        targetPos = calculateTarget(playerPos, getPlayerDirection(), offset);
+        targetAchieved = false;
     }
-    else
-    {
-        dir = Neutral;
-    }
+
+    updatePathToTarget(pathfinder, targetPos);
 }
 
 void Pinky::scatter(Map *map, Pathfinder &pathfinder)

@@ -26,67 +26,67 @@ void Inky::loadAnimation()
     }
 }
 
-void Inky::chase(const Map *map, Pathfinder &pathfinder)
+Point Inky::calculateMirrorTarget(const Point &playerPos, const Direction &playerDirection, const int &offset)
 {
-    const Point playerPos = snapToGrid(getPlayerPosition());
-    const Point blinkyPos = snapToGrid(blinky->getPosition());
+    Point mirrorTarget = playerPos;
 
-    const int offset = 2 * Globals::TILE_SIZE;
-
-    static Point targetMirrorPos = playerPos;
-    static bool targetAchieved = false;
-
-    if (targetAchieved)
-    {
-        targetMirrorPos = playerPos;
-        targetAchieved = false;
-    }
-
-    switch (getPlayerDirection())
+    switch (playerDirection)
     {
         case UP:
-            targetMirrorPos.y -= offset;
+            mirrorTarget.y -= offset;
             break;
         case DOWN:
-            targetMirrorPos.y += offset;
+            mirrorTarget.y += offset;
             break;
         case LEFT:
-            targetMirrorPos.x -= offset;
+            mirrorTarget.x -= offset;
             break;
         case RIGHT:
-            targetMirrorPos.x += offset;
+            mirrorTarget.x += offset;
             break;
         default:
             break;
     }
 
-    Point targetPos = blinkyPos + (targetMirrorPos - blinkyPos);
-    targetPos.x = targetPos.x / 2;
-    targetPos.y = targetPos.y / 2;
+    return mirrorTarget;
+}
 
+Point Inky::calculateChaseTarget(const Point &blinkyPos, const Point &mirrorTarget)
+{
+    return {(blinkyPos.x + mirrorTarget.x) / 2, (blinkyPos.y + mirrorTarget.y) / 2};
+}
 
+void Inky::updatePathToTarget(const Pathfinder &pathfinder, Point &targetPos)
+{
     path = pathfinder.findPath(snapToGrid(position), targetPos, false);
+
     if (path.empty())
     {
-        targetPos = playerPos;
+        targetPos = snapToGrid(getPlayerPosition());
         path = pathfinder.findPath(snapToGrid(position), targetPos, false);
-        directions = getDirections(path);
-    }
-    else
-    {
-        path = pathfinder.findPath(snapToGrid(position), targetPos, false);
-        directions = getDirections(path);
     }
 
+    directions = getDirections(path);
+    dir = directions.empty() ? Neutral : directions.front();
+}
 
-    if (!directions.empty())
+void Inky::chase(const Map *map, Pathfinder &pathfinder)
+{
+    const Point playerPos = snapToGrid(getPlayerPosition());
+    const Point blinkyPos = snapToGrid(blinky->getPosition());
+    const int offset = 2 * Globals::TILE_SIZE;
+
+    static Point targetMirrorPos = playerPos;
+    static bool targetAchieved = false;
+
+    if (targetAchieved || position == targetMirrorPos)
     {
-        dir = directions.front();
+        targetMirrorPos = calculateMirrorTarget(playerPos, getPlayerDirection(), offset);
+        targetAchieved = false;
     }
-    else
-    {
-        dir = Neutral;
-    }
+
+    Point targetPos = calculateChaseTarget(blinkyPos, targetMirrorPos);
+    updatePathToTarget(pathfinder, targetPos);
 }
 
 void Inky::scatter(Map *map, Pathfinder &pathfinder)

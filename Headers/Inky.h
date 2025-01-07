@@ -15,6 +15,12 @@ public:
 
     void loadAnimation() override;
 
+    static Point calculateMirrorTarget(const Point &playerPos, const Direction &playerDirection, const int &offset);
+
+    static Point calculateChaseTarget(const Point &blinkyPos, const Point &mirrorTarget);
+
+    void updatePathToTarget(const Pathfinder &pathfinder, Point &targetPos);
+
     void chase(const Map *map, Pathfinder &pathfinder) override;
 
     void scatter(Map *map, Pathfinder &pathfinder) override;

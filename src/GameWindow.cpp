@@ -102,7 +102,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event)
             player->setAlive(false);
             break;
         case Qt::Key_3:
-            clyde->setGhostMode(Ghost::Return);
+            inky->setGhostMode(Ghost::Return);
             break;
         case Qt::Key_4:
             blinky->setMoveDelay(blinky->getMoveDelay() - 1);
