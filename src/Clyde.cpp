@@ -1,8 +1,6 @@
 #include "../Headers/Clyde.h"
 
-#include <iostream>
-
-Clyde::Clyde(Point startPoint, Player *player, QPixmap spriteSheet)
+Clyde::Clyde(const Point startPoint, Player *player, QPixmap spriteSheet)
     : Ghost(startPoint, 3), spriteSheet(std::move(spriteSheet))
 {
     setPlayer(player);
@@ -27,12 +25,41 @@ void Clyde::loadAnimation()
     }
 }
 
+Point Clyde::generateRandomTarget(const Map *map, std::mt19937 &rng)
+{
+    std::uniform_int_distribution<int> xDist(0, map->getWidth() - 1);
+    std::uniform_int_distribution<int> yDist(0, map->getHeight() - 1);
+
+    Point randomTarget;
+    do
+    {
+        const int randomX = xDist(rng);
+        const int randomY = yDist(rng);
+        randomTarget = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
+    }
+    while (map->getTile(randomTarget).getType() == Wall || map->getTile(randomTarget).getType() == GhostHouse);
+
+    return randomTarget;
+}
+
+void Clyde::updatePathToTarget(const Map *map, const Pathfinder &pathfinder, Point &targetPos)
+{
+    path = pathfinder.findPath(snapToGrid(position), targetPos, false);
+
+    while (path.empty())
+    {
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        targetPos = generateRandomTarget(map, rng);
+        path = pathfinder.findPath(snapToGrid(position), targetPos, false);
+    }
+
+    directions = getDirections(path);
+    dir = directions.empty() ? Neutral : directions.front();
+}
 
 void Clyde::chase(const Map *map, Pathfinder &pathfinder)
 {
-    srand(time(nullptr));
-    const int X_SIZE = map->getWidth();
-    const int Y_SIZE = map->getHeight();
     static Point targetPos;
     static bool firstTime = true;
 
@@ -40,49 +67,15 @@ void Clyde::chase(const Map *map, Pathfinder &pathfinder)
 
     if (firstTime || targetAchieved)
     {
-        int randomX = rand() % X_SIZE;
-        int randomY = rand() % Y_SIZE;
-        targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-
-        while (map->getTile(targetPos).getType() == Wall || map->getTile(targetPos).getType() == GhostHouse)
-        {
-            randomX = rand() % X_SIZE;
-            randomY = rand() % Y_SIZE;
-            targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-        }
+        std::random_device rd;
+        std::mt19937 rng(rd());
+        targetPos = generateRandomTarget(map, rng);
     }
 
-    path = pathfinder.findPath(snapToGrid(position), targetPos, false);
-
-    while (path.empty())
-    {
-        int randomX = rand() % X_SIZE;
-        int randomY = rand() % Y_SIZE;
-        targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-
-        while (map->getTile(targetPos).getType() == Wall || map->getTile(targetPos).getType() == GhostHouse)
-        {
-            randomX = rand() % X_SIZE;
-            randomY = rand() % Y_SIZE;
-            targetPos = {randomX * Globals::TILE_SIZE, randomY * Globals::TILE_SIZE};
-        }
-        path = pathfinder.findPath(snapToGrid(position), targetPos, false);
-    }
-
-    directions = getDirections(path);
-
-    if (!directions.empty())
-    {
-        dir = directions.front();
-    }
-    else
-    {
-        dir = Neutral;
-    }
+    updatePathToTarget(map, pathfinder, targetPos);
 
     firstTime = false;
 }
-
 
 void Clyde::scatter(Map *map, Pathfinder &pathfinder)
 {

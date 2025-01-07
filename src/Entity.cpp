@@ -1,8 +1,8 @@
 #include "../Headers/Entity.h"
 
-Entity::Entity(Point startPos)
-    : position(startPos), dir(Neutral), alive(true), frameCounter(0), moveDelay(16),
-      nextDirection(Neutral) //16
+Entity::Entity(const Point startPos)
+    : position(startPos), dir(Neutral), nextDirection(Neutral), alive(true), frameCounter(0),
+      moveDelay(16) //16
 {}
 
 Point Entity::getPosition() const
@@ -10,7 +10,7 @@ Point Entity::getPosition() const
     return position;
 }
 
-void Entity::setPosition(Point newPosition)
+void Entity::setPosition(const Point newPosition)
 {
     position = newPosition;
 }
@@ -20,7 +20,7 @@ Direction Entity::getDirection() const
     return dir;
 }
 
-void Entity::setDirection(Direction newDirection)
+void Entity::setDirection(const Direction newDirection)
 {
     dir = newDirection;
 }

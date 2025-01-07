@@ -87,7 +87,6 @@ void Player::move(const Direction newDirection, Map *map)
 {
     Point newPos = calculateNewPosition(position, newDirection);
 
-
     if (isValidMove(newPos, map))
     {
         position = newPos;
