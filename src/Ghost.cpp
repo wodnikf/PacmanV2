@@ -77,7 +77,7 @@ bool Ghost::collision()
                 setIsFrightened(false);
                 setGhostMode(Return);
                 setAlive(false);
-                getPlayer()->getScore()->incrementScore(200 * (id +1));
+                getPlayer()->getScore()->incrementScore(200 * (id + 1));
                 return true;
             }
             if (isAlive())
@@ -226,88 +226,6 @@ void Ghost::frightened(Map *map, Pathfinder &pathfinder)
 }
 
 
-void Ghost::update(Map *map, const float deltaTime)
-{
-    const float dtMs = deltaTime * 1000.0f;
-
-    frameCounter += static_cast<int>(dtMs);
-
-    if (frameCounter >= moveDelay + 10)
-    {
-        move(map);
-        frameCounter -= moveDelay + 10;
-    }
-
-    if (getGhostMode() == Scatter)
-    {
-        scatterTimer += static_cast<int>(dtMs);
-        if (scatterTimer >= scatterDuration)
-        {
-            setGhostMode(Chase);
-            scatterTimer = 0;
-        }
-    }
-
-    if (getGhostMode() == Chase)
-    {
-        chaseTimer += static_cast<int>(dtMs);
-        if (chaseTimer >= chaseDuration)
-        {
-            setGhostMode(Scatter);
-            chaseTimer = 0;
-        }
-    }
-
-
-    if (position == houseExitTarget && getGhostMode() == House)
-    {
-        setInHouse(false);
-        setGhostMode(Scatter);
-        snapToGrid(position);
-    }
-
-    if (getInHouse())
-    {
-        houseTimer += static_cast<int>(dtMs);
-        if (houseTimer >= houseDuration)
-        {
-            respawn();
-            setGhostMode(House);
-            houseTimer = 0;
-        }
-    }
-
-    if (position == startPos)
-    {
-        setInHouse(true);
-    }
-
-    if (getIsFrightened())
-    {
-        scatterTimer = 0;
-        chaseTimer = 0;
-        frightenedTimer += static_cast<int>(dtMs);
-
-        if (frightenedTimer >= frightenedDuration)
-        {
-            setMoveDelay(16);
-            setIsFrightened(false);
-            setGhostMode(Chase);
-            frightenedTimer = 0;
-        }
-    }
-
-    animationCounter += static_cast<int>(dtMs);
-
-
-    if (animationCounter >= animationDelay * 20)
-    {
-        setCurrentFrame((getCurrentFrame() + 1) % 2);
-        animationCounter = 0;
-    }
-}
-
-
 void Ghost::render(QPainter &painter) const
 {
     const int x = position.x;
@@ -349,4 +267,104 @@ void Ghost::setCurrentFrame(const int newFrame)
 void Ghost::setAnimations(const int x, const int y, const QPixmap &anim)
 {
     animations[x][y].push_back(anim);
+}
+
+
+void Ghost::update(Map *map, const float deltaTime)
+{
+    const float dtMs = deltaTime * 1000.0f;
+
+    updateFrameCounter(dtMs, map);
+    updateScatterChaseTimers(dtMs);
+    updateHouseState(dtMs);
+    updateFrightenedState(dtMs);
+    updateAnimationCounter(dtMs);
+}
+
+void Ghost::updateFrameCounter(float dtMs, Map *map)
+{
+    frameCounter += static_cast<int>(dtMs);
+    if (frameCounter >= moveDelay + 10)
+    {
+        move(map);
+        frameCounter -= moveDelay + 10;
+    }
+}
+
+void Ghost::updateScatterChaseTimers(float dtMs)
+{
+    if (getGhostMode() == Scatter)
+    {
+        scatterTimer += static_cast<int>(dtMs);
+        if (scatterTimer >= scatterDuration)
+        {
+            setGhostMode(Chase);
+            scatterTimer = 0;
+        }
+    }
+
+    if (getGhostMode() == Chase)
+    {
+        chaseTimer += static_cast<int>(dtMs);
+        if (chaseTimer >= chaseDuration)
+        {
+            setGhostMode(Scatter);
+            chaseTimer = 0;
+        }
+    }
+}
+
+void Ghost::updateHouseState(float dtMs)
+{
+    if (position == houseExitTarget && getGhostMode() == House)
+    {
+        setInHouse(false);
+        setGhostMode(Scatter);
+        snapToGrid(position);
+    }
+
+    if (getInHouse())
+    {
+        houseTimer += static_cast<int>(dtMs);
+        if (houseTimer >= houseDuration)
+        {
+            respawn();
+            setGhostMode(House);
+            houseTimer = 0;
+        }
+    }
+
+    if (position == startPos)
+    {
+        setInHouse(true);
+    }
+}
+
+void Ghost::updateFrightenedState(float dtMs)
+{
+    if (getIsFrightened())
+    {
+        scatterTimer = 0;
+        chaseTimer = 0;
+        frightenedTimer += static_cast<int>(dtMs);
+
+        if (frightenedTimer >= frightenedDuration)
+        {
+            setMoveDelay(16);
+            setIsFrightened(false);
+            setGhostMode(Chase);
+            frightenedTimer = 0;
+        }
+    }
+}
+
+void Ghost::updateAnimationCounter(float dtMs)
+{
+    animationCounter += static_cast<int>(dtMs);
+
+    if (animationCounter >= animationDelay * 20)
+    {
+        setCurrentFrame((getCurrentFrame() + 1) % 2);
+        animationCounter = 0;
+    }
 }

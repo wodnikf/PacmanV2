@@ -47,6 +47,16 @@ public:
 
     void update(Map *map, float deltaTime) override;
 
+    void updateFrameCounter(float dtMs, Map *map);
+
+    void updateScatterChaseTimers(float dtMs);
+
+    void updateHouseState(float dtMs);
+
+    void updateFrightenedState(float dtMs);
+
+    void updateAnimationCounter(float dtMs);
+
     void house(const Pathfinder &pathfinder);
 
     void returnToHouse(const Pathfinder &pathfinder);
